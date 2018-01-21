@@ -23,7 +23,11 @@ uint8_t ecu_simClass::init(uint32_t baud) {
 uint8_t ecu_simClass::update(void) 
 {
   CAN_message_t can_MsgRx,can_MsgTx;
-   
+
+//  can_MsgTx.flags.extended = 0; 
+//  can_MsgTx.flags.remote = 0; 
+  can_MsgTx.ext =0 ;
+  can_MsgTx.rtr =0 ;
   if(Can0.read(can_MsgRx)) 
   {
      if (can_MsgRx.id == PID_REQUEST) 
