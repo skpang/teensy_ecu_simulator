@@ -17,6 +17,8 @@ uint8_t ecu_simClass::init(uint32_t baud) {
 
   Can0.begin(baud);
   ecu.dtc = 0;
+  ecu.coolant_temp =80;
+  ecu.engine_rpm = 4000;
   return 0;
 }
 

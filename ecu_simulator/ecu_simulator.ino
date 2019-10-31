@@ -81,7 +81,7 @@ void setup() {
   tft.setTextColor(ILI9341_YELLOW);
 
   tft.setCursor(0, 0);
-  tft.println("ECU Simulator v1.0 skpang.co.uk 11/16");
+  tft.println("ECU Simulator v1.1 skpang.co.uk 10/19");
 
   tft.drawLine(0,20,340,20,ILI9341_DARKGREY);    //Horizontal line
   tft.setFont(LiberationMono_10);
@@ -126,6 +126,12 @@ void setup() {
     
   menu_state = L0_MAIN_MENU;
   Serial.println(F("ECU Simulator v1.0 SK Pang 12/16"));
+  for(int i=0;i<8;i++)
+  {
+    menu_state = i;
+    update_param(JOG_INC);
+    
+  }
 
 }
 
@@ -170,8 +176,12 @@ void clear_value(void)
 
 void update_param(unsigned char dir)
 {
+  int a;
+  int b;
+ 
     switch(menu_state)
     {
+     
         case L0_MAIN_MENU:
             
             break;
@@ -185,17 +195,21 @@ void update_param(unsigned char dir)
             }
           
             clear_value();
-            tft.print(ecu.engine_rpm); 
+            
+            a =   (ecu.engine_rpm & 0xff00) >> 8;
+            b =  ecu.engine_rpm & 0x00ff;
+            tft.print(((256*a) +b)/4); 
             tft.print(" rpm"); 
             break;
             
         case L0_COOLANT:
+           
             if((dir == JOG_INC) & (ecu.coolant_temp < 215)) {
                 ecu.coolant_temp++;
             } else if (ecu.coolant_temp > 0) ecu.coolant_temp--;
             
             clear_value();
-            tft.print(ecu.coolant_temp); 
+            tft.print(ecu.coolant_temp -40); 
             tft.print(" C");            
               
             break;
@@ -226,8 +240,12 @@ void update_param(unsigned char dir)
                 ecu.maf_airflow = ecu.maf_airflow +10;
             } else if (ecu.maf_airflow > 0) ecu.maf_airflow = ecu.maf_airflow - 10;
             
-            clear_value();            
-            tft.print(ecu.maf_airflow); 
+            clear_value();     
+                    
+            a =   (ecu.maf_airflow & 0xff00) >> 8;
+            b =  ecu.maf_airflow & 0x00ff;
+                   
+            tft.print(float(((256*a) +b)/float (100))); 
             tft.print(" g/s");        
                
             break;
@@ -318,7 +336,3 @@ void update_menu(void)
   delay(10);
 
 }
-
-
-
-
